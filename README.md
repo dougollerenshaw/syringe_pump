@@ -3,6 +3,8 @@ source files to build and run a syringe pump
 
 syringe pump model is built in freecad
 
+![Alt text](res/cad_model_image.png?raw=true "CAD model")
+
 Designed to use a Nema 17 stepper motor with an A4988 microstepping driver
 
 Python code communicates with an arduino via USB serial using the PyFirmata pacakage. Arduino controls the stepper driver with digital outputs.
