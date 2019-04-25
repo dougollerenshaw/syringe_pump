@@ -14,25 +14,31 @@ class Stepper(object):
         # the following are specific to a NEMA17 stepper with a T8 leadscrew
         self.steps_per_rotation = 200
         self.mm_per_rotation = 8
+
         
-        self.set_mm_per_ml(syringe)
+        self.set_mm_per_ml(syringe, calibrate_steps=False)
 
         self._pin13 = 0
 
         self.stepsize="sixteenth"
         self.set_stepsize(self.stepsize)
+
         self.direction="cw"
         self.set_direction(self.direction)
 
 
         self.arduino.digital[self.disable_pin].write(0)
 
-    def set_mm_per_ml(self,syringe):
+    def set_mm_per_ml(self,syringe, calibrate_steps=True):
         mm_per_ml = {
             '5ml':44./5,
             '1ml':57.
         }
+
         self.mm_per_ml = mm_per_ml[syringe.lower()]
+        print('configuring for a {} syringe with {} mm of travel per mL'.format(syringe,self.mm_per_ml))
+        if calibrate_steps:
+            self.set_steps_per_ul()
 
     def set_steps_per_ul(self):
         self.ul_per_step = 1000/(self.mm_per_ml/self.mm_per_rotation*self.steps_per_rotation/self._step_deci)
