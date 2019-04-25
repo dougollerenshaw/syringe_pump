@@ -58,7 +58,8 @@ class Stepper(object):
         self._step_deci = step_deci[stepsize]
         self.set_steps_per_ul()
 
-     def set_direction(self,direction):
+    def set_direction(self,direction):
+
         if direction.lower() == 'cw' or direction.lower() == 'retract':
             self.arduino.digital[self.dir_pin].write(0)
         elif direction.lower() == 'ccw' or direction.lower() == 'dispense':
