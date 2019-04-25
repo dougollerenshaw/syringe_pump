@@ -14,6 +14,8 @@ class StepperServer(Stepper):
         Stepper.__init__(self, port=port, syringe=syringe)
         # self.arduino = Arduino(port)
         print('running stepper server')
+        print('usb port = {}'.format(port))
+        print('syringe = {}'.format(syringe))
 
 
 daemon = Pyro4.Daemon("192.168.0.46")                # make a Pyro daemon
