@@ -2,7 +2,7 @@ from pyfirmata import Arduino, util
 import time
 
 class Stepper(object):
-    def __init__(self,port='/dev/ttyACM0'):
+    def __init__(self,port='/dev/ttyACM0',syringe='5ml'):
         self.arduino = Arduino(port)
         self.disable_pin = 2
         self.dir_pin = 4
@@ -10,16 +10,29 @@ class Stepper(object):
         self.mc1 = 5
         self.mc2 = 6
         self.mc3 = 7
+
+        # the following are specific to a NEMA17 stepper with a T8 leadscrew
         self.steps_per_rotation = 200
+        self.mm_per_rotation = 8
+        
+        self.set_mm_per_ml(syringe)
+
+        self._pin13 = 0
+
         self.stepsize="sixteenth"
         self.set_stepsize(self.stepsize)
         self.direction="cw"
         self.set_direction(self.direction)
 
-        self.mm_per_rotation = 8
-        self.mm_per_ml = 44./5
 
         self.arduino.digital[self.disable_pin].write(0)
+
+    def set_mm_per_ml(self,syringe):
+        mm_per_ml = {
+            '5ml':44./5,
+            '1ml':57.
+        }
+        self.mm_per_ml = mm_per_ml[syringe.lower()]
 
     def set_steps_per_ul(self):
         self.ul_per_step = 1000/(self.mm_per_ml/self.mm_per_rotation*self.steps_per_rotation/self._step_deci)
