@@ -58,6 +58,14 @@ class Stepper(object):
         self._step_deci = step_deci[stepsize]
         self.set_steps_per_ul()
 
+    def toggle_builtin_led(self):
+        print('current state is {}, setting to {}'.format(self._pin13, abs(self._pin13 - 1)))
+        self.set_pin(13,abs(self._pin13 - 1))
+        self._pin13 = abs(self._pin13 - 1)
+
+    def set_pin(self,pin_number,state):
+        self.arduino.digital[pin_number].write(state)
+
     def set_direction(self,direction):
 
         if direction.lower() == 'cw' or direction.lower() == 'retract':
