@@ -30,7 +30,7 @@ class Stepper(object):
         self.arduino.digital[self.disable_pin].write(0)
 
     def calibrate(self,syringe):
-        set_mm_per_ml(syringe,calibrate_steps=True)
+        self.set_mm_per_ml(syringe,calibrate_steps=True)
 
 
     def set_mm_per_ml(self,syringe, calibrate_steps=True):
