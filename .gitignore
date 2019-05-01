@@ -4,3 +4,4 @@
 \._stepper_server\.py
 
 \._stepper_client\.py
+.DS_Store
