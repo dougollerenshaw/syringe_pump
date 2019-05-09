@@ -7,3 +7,5 @@
 .DS_Store
 
 python_syringe_pump\.egg-info/
+
+*.egg
