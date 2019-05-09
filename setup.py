@@ -9,6 +9,7 @@ setuptools.setup(
     install_requires=[
         "pyfirmata==1.1.0",
         "pyserial==3.4",
-        "Pyro4"
+        "Pyro4",
+        "serpent"
     ]
 )
