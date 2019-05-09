@@ -17,6 +17,13 @@ class StepperServer(Stepper):
         print('usb port = {}'.format(port))
         print('syringe = {}'.format(syringe))
 
+    @Pyro4.oneway
+    def deliver_reward(self,volume):
+        '''
+        a one-way (non-blocking) method for delivering a reward
+        '''
+        self.dispense(volume)
+
 
 daemon = Pyro4.Daemon("192.168.0.46")                # make a Pyro daemon
 ns = Pyro4.locateNS()                  # find the name server
