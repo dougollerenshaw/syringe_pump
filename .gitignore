@@ -5,3 +5,5 @@
 
 \._stepper_client\.py
 .DS_Store
+
+python_syringe_pump\.egg-info/
