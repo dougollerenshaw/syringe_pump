@@ -36,6 +36,7 @@ class Stepper(object):
     def set_mm_per_ml(self,syringe, calibrate_steps=True):
         mm_per_ml = {
             '5ml':44./5,
+            '3ml':51.7/3,
             '1ml':57.
         }
 
