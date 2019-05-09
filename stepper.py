@@ -91,14 +91,9 @@ class Stepper(object):
         self.rotate(steps,direction='dispense')
 
     def retract(self,volume=1000):
-        previous_stepsize = self.stepsize
-        self.stepsize = 'half'
-        self.set_stepsize(self.stepsize)
         steps = round(volume/self.ul_per_step)
         print('retracting {} ul in {} steps'.format(volume,steps))
         self.rotate(steps,direction='retract')
-        self.stepsize = previous_stepsize
-        self.set_stepsize(self.stepsize)
 
     def rotate(self,steps,direction=None,delay=0.000):
         if direction is not None:
