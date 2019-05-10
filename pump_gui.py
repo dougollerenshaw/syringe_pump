@@ -26,7 +26,12 @@ class SyringePumpGUI:
         self.dispense_volume_entry =  Entry(self.master, width=20, text="volume in uL")
         self.dispense_volume_entry.pack()
 
-        self.custom_dispense_button = Button(self.master, text="Dispense custom volume", width=20, command=self.clicked)
+        self.custom_dispense_button = Button(
+            self.master, 
+            text="Dispense custom volume", 
+            width=20, 
+            command=self.custom_dispense
+            )
         self.custom_dispense_button.pack()
 
         self.close_button = Button(self.master, text="Close", width=20, command=master.quit)
@@ -43,7 +48,7 @@ class SyringePumpGUI:
         print('retracting {} ul'.format(volume))
         self.pump.retract(volume)
 
-    def clicked(self):
+    def custom_dispense(self):
         volume = self.dispense_volume_entry.get()
         print('dispensing {} ul'.format(volume))
         self.dispense(int(volume))
