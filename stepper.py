@@ -26,6 +26,11 @@ class Stepper(object):
         self.direction="cw"
         self.set_direction(self.direction)
 
+        self.max_limit = None
+        self.min_limit = None
+
+        self.step_count = 0
+        self._direction_multiplier = 0
 
         self.arduino.digital[self.disable_pin].write(0)
 
@@ -81,8 +86,10 @@ class Stepper(object):
 
         if direction.lower() == 'cw' or direction.lower() == 'retract':
             self.arduino.digital[self.dir_pin].write(0)
+            self._direction_multiplier = -1
         elif direction.lower() == 'ccw' or direction.lower() == 'dispense':
             self.arduino.digital[self.dir_pin].write(1)
+            self._direction_multiplier = 1
         self._direction = direction
         return direction
 
@@ -113,3 +120,5 @@ class Stepper(object):
             time.sleep(delay)
         self.arduino.digital[self.disable_pin].write(1)
         time.sleep(delay)
+
+        self.step_count += steps*self._step_direction
