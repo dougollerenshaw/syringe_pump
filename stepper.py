@@ -119,5 +119,3 @@ class Stepper(object):
             time.sleep(delay)
         self.arduino.digital[self.disable_pin].write(1)
         time.sleep(delay)
-
-        self.step_count += steps*self._step_direction
