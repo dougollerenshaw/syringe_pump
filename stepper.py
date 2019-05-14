@@ -15,6 +15,10 @@ class Stepper(object):
         self.steps_per_rotation = 200
         self.mm_per_rotation = 8
 
+        self.step_count = 0
+        self.max_limit = None # set as maximum step number to keep from pulling plunger from syringe
+        self.min_limit = None # set as minimum step number to avoid bottoming out
+        self._direction_multiplier = 0
         
         self.set_mm_per_ml(syringe, calibrate_steps=False)
 
@@ -25,12 +29,6 @@ class Stepper(object):
 
         self.direction="cw"
         self.set_direction(self.direction)
-
-        self.max_limit = None
-        self.min_limit = None
-
-        self.step_count = 0
-        self._direction_multiplier = 0
 
         self.arduino.digital[self.disable_pin].write(0)
 
@@ -114,6 +112,7 @@ class Stepper(object):
         self.arduino.digital[self.disable_pin].write(0)
 
         for i in range(steps):
+            self.step_count += self._direction_multiplier
             self.arduino.digital[self.step_pin].write(0)
             time.sleep(delay)
             self.arduino.digital[self.step_pin].write(1)
