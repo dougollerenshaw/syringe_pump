@@ -25,6 +25,10 @@ class StepperServer(Stepper):
         self.dispense(volume)
 
 
+    @Pyro4.expose
+    def get_step_count(self):
+        return self.step_count
+
 daemon = Pyro4.Daemon("10.128.50.194")                # make a Pyro daemon
 ns = Pyro4.locateNS()                  # find the name server
 print("nameserver = {}".format(ns))
