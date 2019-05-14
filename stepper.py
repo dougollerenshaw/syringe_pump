@@ -102,20 +102,29 @@ class Stepper(object):
         self.rotate(steps,direction='retract')
 
     def rotate(self,steps,direction=None,delay=0.000):
+        # make sure direction and stepsize are set
         if direction is not None:
             self.direction = self.set_direction(direction)
         if self.stepsize != self._stepsize:
             self.set_stepsize(self.stepsize)
         if self.direction != self._direction:
             self.set_direction(self.direction)
+        
+        # cast steps as int
         steps = int(steps)
+
+        # enable stepper
         self.arduino.digital[self.disable_pin].write(0)
 
+        # toggle step pin in loop
         for i in range(steps):
             self.step_count += self._direction_multiplier
             self.arduino.digital[self.step_pin].write(0)
             time.sleep(delay)
             self.arduino.digital[self.step_pin].write(1)
             time.sleep(delay)
+        
+        # disable stepper (otherwise it makes a high pitch whine while it waits)
         self.arduino.digital[self.disable_pin].write(1)
+        print('done stepping, current step count = {}'.format(self.step_count))
         time.sleep(delay)
