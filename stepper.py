@@ -15,7 +15,11 @@ class Stepper(object):
         self.steps_per_rotation = 200
         self.mm_per_rotation = 8
 
-        
+        self.step_count = 0
+        self.max_limit = None # set as maximum step number to keep from pulling plunger from syringe
+        self.min_limit = None # set as minimum step number to avoid bottoming out
+        self._direction_multiplier = 0
+
         self.set_mm_per_ml(syringe, calibrate_steps=False)
 
         self._pin13 = 0
@@ -26,8 +30,7 @@ class Stepper(object):
         self.direction="cw"
         self.set_direction(self.direction)
 
-
-        self.arduino.digital[self.disable_pin].write(0)
+        self.arduino.digital[self.disable_pin].write(1)
 
     def calibrate(self,syringe):
         self.set_mm_per_ml(syringe,calibrate_steps=True)
@@ -81,8 +84,10 @@ class Stepper(object):
 
         if direction.lower() == 'cw' or direction.lower() == 'retract':
             self.arduino.digital[self.dir_pin].write(0)
+            self._direction_multiplier = -1
         elif direction.lower() == 'ccw' or direction.lower() == 'dispense':
             self.arduino.digital[self.dir_pin].write(1)
+            self._direction_multiplier = 1
         self._direction = direction
         return direction
 
@@ -97,19 +102,29 @@ class Stepper(object):
         self.rotate(steps,direction='retract')
 
     def rotate(self,steps,direction=None,delay=0.000):
+        # make sure direction and stepsize are set
         if direction is not None:
             self.direction = self.set_direction(direction)
         if self.stepsize != self._stepsize:
             self.set_stepsize(self.stepsize)
         if self.direction != self._direction:
             self.set_direction(self.direction)
+
+        # cast steps as int
         steps = int(steps)
+
+        # enable stepper
         self.arduino.digital[self.disable_pin].write(0)
 
+        # toggle step pin in loop
         for i in range(steps):
+            self.step_count += self._direction_multiplier
             self.arduino.digital[self.step_pin].write(0)
             time.sleep(delay)
             self.arduino.digital[self.step_pin].write(1)
             time.sleep(delay)
+
+        # disable stepper (otherwise it makes a high pitch whine while it waits)
         self.arduino.digital[self.disable_pin].write(1)
+        print('done stepping, current step count = {}'.format(self.step_count))
         time.sleep(delay)

@@ -24,6 +24,37 @@ class StepperServer(Stepper):
         '''
         self.dispense(volume)
 
+    @Pyro4.expose
+    def get_step_count(self):
+        return self.step_count
+
+    @Pyro4.expose
+    def get_max_limit(self):
+        return self.max_limit
+
+    @Pyro4.expose
+    def get_min_limit(self):
+        return self.min_limit
+
+#    @Pyro4.expose
+#    @property
+#    def min_limit(self):
+#        return self.min_limit
+
+#    @Pyro4.expose
+#    @property
+#    def max_limit(self):
+#        return self.max_limit
+
+#    @Pyro4.expose
+#    @min_limit.setter
+#    def set_min_limit(self, value):
+#        self.min_limit = value
+
+#    @Pyro4.expose
+#    @max_limit.setter
+#    def set_max_limit(self, value):
+#        self.max_limit = value
 
 daemon = Pyro4.Daemon("10.128.50.194")                # make a Pyro daemon
 ns = Pyro4.locateNS()                  # find the name server
