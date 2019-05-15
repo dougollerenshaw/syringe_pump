@@ -1,4 +1,5 @@
 from tkinter import Tk, Label, Button, Entry, StringVar
+from tkinter import messagebox
 import time
 import Pyro4
 
@@ -23,12 +24,6 @@ class SyringePumpGUI:
         self.label = Label(self.master, text="Syringe Pump Remote Control")
         self.label.pack()
 
-        self.dispense_button = Button(self.master, text="dispense 1mL", width=20, command=self.dispense)
-        self.dispense_button.pack()
-
-        self.retract_button = Button(self.master, text="retract 1mL", width=20, command=self.retract)
-        self.retract_button.pack()
-
         self.hold_to_dispense = Button(self.master, text="hold to dispense", width=20)
         self.hold_to_dispense.pack()
 
@@ -41,6 +36,9 @@ class SyringePumpGUI:
         self.hold_to_retract.bind('<ButtonPress-1>',self.start_continuous_retract)
         self.hold_to_retract.bind('<ButtonRelease-1>',self.stop_continuous_retract)
 
+        self.flush_cycle = Button(self.master, text='Flush', width=20, command=self.flush)
+        self.flush_cycle.pack()
+        
         self.dispense_volume_entry =  Entry(self.master, width=20, text="volume in uL")
         self.dispense_volume_entry.pack()
 
@@ -53,9 +51,9 @@ class SyringePumpGUI:
         self.custom_dispense_button.pack()
 
         self.step_count = StringVar()
-        self.step_count_display = Label(self.master, width=20, textvariable=self.step_count)
-        self.step_count.set('test test')
-        self.step_count_display.pack()
+        # self.step_count_display = Label(self.master, width=20, textvariable=self.step_count)
+        # self.step_count.set('test test')
+        # self.step_count_display.pack()
 
         self.close_button = Button(self.master, text="Close", width=20, command=master.quit)
         self.close_button.pack()
@@ -93,6 +91,15 @@ class SyringePumpGUI:
             self.master.after(1, self.continuous_dispense)
             self.update_step_count()
 
+    def flush(self):
+        '''fully dispense and refill syringe'''
+        confirm = messagebox.askokcancel("About to flush","Syringe must be fully retracted. Continue?")
+        if confirm:
+            self.dispense(volume=3000)
+            # overshoot by 100 ul to account for hysteresis in check valves
+            self.retract(volume=3100)
+            # dispense 100 ul to account for hysteresis in check valves and ensure system is primed
+            self.dispense(volume=100)
 
     def dispense(self,volume=1000):
         print('dispensing {} ul'.format(volume))
@@ -110,8 +117,7 @@ class SyringePumpGUI:
         self.dispense(int(volume))
 
     def update_step_count(self):
-        print('in update')
-        self.step_count.set(self.pump.step_count)
+        self.step_count.set(self.pump.get_step_count())
 
 
     print('in main loop')
