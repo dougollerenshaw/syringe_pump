@@ -1,10 +1,10 @@
-from pyfirmata import Arduino, util
+# from pyfirmata import Arduino, util
 from gpiozero import DigitalOutputDevice
 import time
 
 
 class Stepper(object):
-    def __init__(self, port='/dev/ttyACM0', syringe='5ml', mode='arduino', disable_when_inactive=True):
+    def __init__(self, port='/dev/ttyACM0', syringe='5ml', mode='rpi', disable_when_inactive=True):
         self.mode = mode
         if self.mode == 'arduino':
             self.arduino = Arduino(port)
@@ -111,7 +111,7 @@ class Stepper(object):
             self.set_pin(self.dir_pin, 0)
             self._direction_multiplier = -1
         elif direction.lower() == 'ccw' or direction.lower() == 'dispense':
-            self.set_pin(self.dir_pin, 0)
+            self.set_pin(self.dir_pin, 1)
             self._direction_multiplier = 1
         self._direction = direction
         return direction
