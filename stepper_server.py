@@ -13,7 +13,7 @@ Pyro4.config.REQUIRE_EXPOSE = False
 
 @Pyro4.expose
 class StepperServer(Stepper):
-    def __init__(self, syringe='5ml', mode='rpi'):
+    def __init__(self, syringe='5ml', mode='rpi', port=None):
         Stepper.__init__(self, port=port, syringe=syringe)
         # self.arduino = Arduino(port)
         print('running stepper server')
