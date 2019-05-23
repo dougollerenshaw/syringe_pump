@@ -117,12 +117,12 @@ class Stepper(object):
         return direction
 
     def dispense(self, volume):
-        steps = round(volume/self.ul_per_step)
+        steps = round(float(volume)/self.ul_per_step)
         print('delivering {} ul in {} steps'.format(volume, steps))
         self.rotate(steps, direction='dispense')
 
     def retract(self, volume=1000):
-        steps = round(volume/self.ul_per_step)
+        steps = round(float(volume)/self.ul_per_step)
         print('retracting {} ul in {} steps'.format(volume, steps))
         self.rotate(steps, direction='retract')
 
