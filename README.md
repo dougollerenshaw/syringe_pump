@@ -60,3 +60,21 @@ To retract 100 uL
 ```
 >> s.retract(100)
 ```
+
+Pyro also allows connections through html.
+On raspberry pi:
+```
+$ python -m Pyro4.utils.httpgateway -H <IP OF PI> -e stepper.server
+```
+
+From a browser:
+
+to deliver a 10 ul reward:
+```
+http://<IP OF PI>:8080/pyro/stepper.server/deliver_reward?volume=10
+```
+
+to check the step count:
+```
+http://<IP OF PI>:8080/pyro/stepper.server/step_count
+```
