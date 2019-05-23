@@ -1,4 +1,5 @@
 import socket
+import subprocess
 
 configuration_values = {
     'servername':'stepper.server',
@@ -18,7 +19,8 @@ class Config(object):
 
     def get_ip(self):
         hostname = self.get_hostname()
-        return socket.gethostbyname(hostname)
+        ip = subprocess.check_output(['hostname', '-I'])
+        return ip.decode("utf-8").split()[0]
 
 if __name__ == '__main__':
     config = Config()
