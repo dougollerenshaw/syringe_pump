@@ -1,4 +1,5 @@
 from stepper import Stepper
+from config import Config
 from pyfirmata import Arduino, util
 from gpiozero import DigitalOutputDevice
 import Pyro4
@@ -40,9 +41,10 @@ class StepperServer(Stepper):
 
 if __name__ == '__main__':
 
+    config = Config()
     server = StepperServer()
 
-    daemon = Pyro4.Daemon("192.168.0.186")                # make a Pyro daemon
+    daemon = Pyro4.Daemon(config.ip)                # make a Pyro daemon
     ns = Pyro4.locateNS()                  # find the name server
     print("nameserver = {}".format(ns))
     # register the stepper server as a Pyro object
