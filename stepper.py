@@ -4,7 +4,7 @@ import time
 
 
 class Stepper(object):
-    def __init__(self, port='/dev/ttyACM0', syringe='5ml', mode='rpi', disable_when_inactive=True):
+    def __init__(self, syringe='5ml', mode='rpi', disable_when_inactive=True, port=None,):
         self.mode = mode
         if self.mode == 'arduino':
             self.arduino = Arduino(port)

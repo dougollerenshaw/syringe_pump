@@ -13,7 +13,7 @@ Pyro4.config.REQUIRE_EXPOSE = False
 
 @Pyro4.expose
 class StepperServer(Stepper):
-    def __init__(self, port='/dev/ttyACM0', syringe='5ml', mode='rpi'):
+    def __init__(self, syringe='5ml', mode='rpi'):
         Stepper.__init__(self, port=port, syringe=syringe)
         # self.arduino = Arduino(port)
         print('running stepper server')
@@ -39,10 +39,14 @@ class StepperServer(Stepper):
     def get_min_limit(self):
         return self.min_limit
 
+
 if __name__ == '__main__':
 
     config = Config()
-    server = StepperServer()
+    server = StepperServer(
+        syringe=config.syringe,
+        mode=config.mode,
+    )
 
     daemon = Pyro4.Daemon(config.ip)                # make a Pyro daemon
     ns = Pyro4.locateNS()                  # find the name server
@@ -50,7 +54,7 @@ if __name__ == '__main__':
     # register the stepper server as a Pyro object
     uri = daemon.register(server)
     # register the object with a name in the name server
-    ns.register("stepper.server", uri)
+    ns.register(config.servername, uri)
 
     # print("The daemon runs on port: {}".format(daemon.port))
     print("The object's uri is: {}".format(uri))

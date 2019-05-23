@@ -2,6 +2,8 @@ import socket
 
 configuration_values = {
     'servername':'stepper.server',
+    'syringe':'3ml',
+    'mode':'rpi'
 }
 
 class Config(object):
