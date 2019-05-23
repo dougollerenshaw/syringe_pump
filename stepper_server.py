@@ -38,38 +38,21 @@ class StepperServer(Stepper):
     def get_min_limit(self):
         return self.min_limit
 
-#    @Pyro4.expose
-#    @property
-#    def min_limit(self):
-#        return self.min_limit
+if __name__ == '__main__':
 
-#    @Pyro4.expose
-#    @property
-#    def max_limit(self):
-#        return self.max_limit
+    server = StepperServer()
 
-#    @Pyro4.expose
-#    @min_limit.setter
-#    def set_min_limit(self, value):
-#        self.min_limit = value
+    daemon = Pyro4.Daemon("192.168.0.186")                # make a Pyro daemon
+    ns = Pyro4.locateNS()                  # find the name server
+    print("nameserver = {}".format(ns))
+    # register the stepper server as a Pyro object
+    uri = daemon.register(server)
+    # register the object with a name in the name server
+    ns.register("stepper.server", uri)
 
-#    @Pyro4.expose
-#    @max_limit.setter
-#    def set_max_limit(self, value):
-#        self.max_limit = value
+    # print("The daemon runs on port: {}".format(daemon.port))
+    print("The object's uri is: {}".format(uri))
 
-
-daemon = Pyro4.Daemon("192.168.0.186")                # make a Pyro daemon
-ns = Pyro4.locateNS()                  # find the name server
-print("nameserver = {}".format(ns))
-# register the stepper server as a Pyro object
-uri = daemon.register(StepperServer)
-# register the object with a name in the name server
-ns.register("stepper.server", uri)
-
-# print("The daemon runs on port: {}".format(daemon.port))
-print("The object's uri is: {}".format(uri))
-
-print("Ready.")
-# start the event loop of the server to wait for calls
-daemon.requestLoop()
+    print("Ready.")
+    # start the event loop of the server to wait for calls
+    daemon.requestLoop()
