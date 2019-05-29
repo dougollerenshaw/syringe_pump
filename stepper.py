@@ -1,5 +1,6 @@
 # from pyfirmata import Arduino, util
 from gpiozero import DigitalOutputDevice
+import numpy as np
 import time
 
 
@@ -23,6 +24,7 @@ class Stepper(object):
             self.mc3 = DigitalOutputDevice(7)
             self.pin8 = DigitalOutputDevice(8)
 
+
         # should we turn off the motor between commands?
         self.disable_when_inactive = disable_when_inactive
 
@@ -31,9 +33,9 @@ class Stepper(object):
         self.mm_per_rotation = 8
 
         self.step_count = 0
-        # set as maximum step number to keep from pulling plunger from syringe
-        self.max_limit = None
-        self.min_limit = None  # set as minimum step number to avoid bottoming out
+        self.volume_dispensed = 0
+        self.dispense_limit = None # set as minimum step number to avoid bottoming out
+        self.retract_limit = None  # set as maximum step number to keep from pulling plunger from syringe
         self._direction_multiplier = 0
 
         self.set_mm_per_ml(syringe, calibrate_steps=False)
@@ -117,13 +119,19 @@ class Stepper(object):
         return direction
 
     def dispense(self, volume):
-        steps = round(float(volume)/self.ul_per_step)
+        steps = float(volume)/self.ul_per_step
+        # the following line will deal with fractional steps by probabalistically rounding
+        #  up or down (e.g. 1.75 will be 2 75% of the time and 1 25% of the time)
+        #  this will prevent systematic biases in the amount of fluid delivered
+        steps = int(steps) + int(np.random.rand() < (steps % 1))
+        self.volume_dispensed += steps*self.ul_per_step
         print('delivering {} ul in {} steps'.format(volume, steps))
         self.rotate(steps, direction='dispense')
 
     def retract(self, volume=1000):
         steps = round(float(volume)/self.ul_per_step)
         print('retracting {} ul in {} steps'.format(volume, steps))
+        self.volume_dispensed -= steps*self.ul_per_step
         self.rotate(steps, direction='retract')
 
     def rotate(self, steps, direction=None, delay=0.000):
