@@ -32,6 +32,18 @@ class StepperServer(Stepper):
         return self.step_count
 
     @Pyro4.expose
+    def set_step_count(self,value):
+        self.step_count = value
+
+    @Pyro4.expose
+    def get_volume_dispensed(self):
+        return self.volume_dispensed
+
+    @Pyro4.expose
+    def set_volume_dispensed(self,value):
+        self.volume_dispensed = 0
+
+    @Pyro4.expose
     def get_max_limit(self):
         return self.max_limit
 
