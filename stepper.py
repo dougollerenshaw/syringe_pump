@@ -22,6 +22,7 @@ class Stepper(object):
             self.mc2 = DigitalOutputDevice(6)
             self.mc3 = DigitalOutputDevice(7)
             self.pin8 = DigitalOutputDevice(8)
+            self.delay = 0.00025 # delay between ttl pulses when stepping
 
         # should we turn off the motor between commands?
         self.disable_when_inactive = disable_when_inactive
@@ -119,12 +120,12 @@ class Stepper(object):
     def dispense(self, volume):
         steps = round(float(volume)/self.ul_per_step)
         print('delivering {} ul in {} steps'.format(volume, steps))
-        self.rotate(steps, direction='dispense')
+        self.rotate(steps, direction='dispense', delay=self.delay)
 
     def retract(self, volume=1000):
         steps = round(float(volume)/self.ul_per_step)
         print('retracting {} ul in {} steps'.format(volume, steps))
-        self.rotate(steps, direction='retract')
+        self.rotate(steps, direction='retract', delay=self.delay)
 
     def rotate(self, steps, direction=None, delay=0.000):
         # make sure direction and stepsize are set
@@ -141,6 +142,7 @@ class Stepper(object):
         # enable stepper
         if self.disable_when_inactive:
             self.set_pin(self.disable_pin, 0)
+            time.sleep(0.001) #1 ms delay to make sure the motor is engaged before trying to turn
 
         # toggle step pin in loop
         for i in range(steps):
@@ -151,6 +153,7 @@ class Stepper(object):
 
         # disable stepper (otherwise it makes a high pitch whine while it waits)
         if self.disable_when_inactive:
+            time.sleep(0.001) #1 ms delay to make sure the motor is done turning before disengaging
             self.set_pin(self.disable_pin, 1)
         print('done stepping, current step count = {}'.format(self.step_count))
         time.sleep(delay)
