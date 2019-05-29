@@ -125,15 +125,14 @@ class Stepper(object):
         #  up or down (e.g. 1.75 will be 2 75% of the time and 1 25% of the time)
         #  this will prevent systematic biases in the amount of fluid delivered
         steps = int(steps) + int(random.random() < (steps % 1))
-        self.volume_dispensed += steps*self.ul_per_step
-        print('delivering {} ul in {} steps'.format(volume, steps))
+        self.volume_dispensed += float(steps)*float(self.ul_per_step)
+        print('delivering {} ul in {} steps for a total volume of {}'.format(volume, steps, self.volume_dispensed))
         self.rotate(steps, direction='dispense', delay=self.delay)
 
     def retract(self, volume=1000):
         steps = round(float(volume)/self.ul_per_step)
-        print('retracting {} ul in {} steps'.format(volume, steps))
-        self.rotate(steps, direction='retract', delay=self.delay)
-        self.volume_dispensed -= steps*self.ul_per_step
+        self.volume_dispensed -= float(steps)*float(self.ul_per_step)
+        print('retracting {} ul in {} steps for a total volume of {}'.format(volume, steps, self.volume_dispensed))
         self.rotate(steps, direction='retract', delay=self.delay)
 
     def rotate(self, steps, direction=None, delay=0.000):
