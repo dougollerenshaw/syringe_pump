@@ -13,7 +13,7 @@ Pyro4.config.REQUIRE_EXPOSE = False
 
 @Pyro4.expose
 class StepperServer(Stepper):
-    def __init__(self, syringe='5ml', mode='rpi', port=None):
+    def __init__(self, syringe='3ml', mode='rpi', port=None):
         Stepper.__init__(self, port=port, syringe=syringe)
         # self.arduino = Arduino(port)
         print('running stepper server')
@@ -30,6 +30,18 @@ class StepperServer(Stepper):
     @Pyro4.expose
     def get_step_count(self):
         return self.step_count
+
+    @Pyro4.expose
+    def set_step_count(self,value):
+        self.step_count = value
+
+    @Pyro4.expose
+    def get_volume_dispensed(self):
+        return self.volume_dispensed
+
+    @Pyro4.expose
+    def set_volume_dispensed(self,value):
+        self.volume_dispensed = 0
 
     @Pyro4.expose
     def get_max_limit(self):

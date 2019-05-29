@@ -12,6 +12,9 @@ class SyringePumpGUI:
         self.retract_button_pressed = False
         self.dispense_button_pressed = False
 
+        self.retract_limit = None
+        self.dispense_limit = None
+
         self.dispense_direction = 'ccw'
         self.retract_direction = 'cw'
         self.continuous_stepsize = 64 # number of steps to take in each loop when dispensing continuously
@@ -19,7 +22,7 @@ class SyringePumpGUI:
         self.master.geometry('300x300')
 
         self.pump = Pyro4.Proxy("PYRONAME:{}".format(servername))
-        self.pump.calibrate(syringe_size)
+        # self.pump.calibrate(syringe_size)
 
         self.label = Label(self.master, text="Syringe Pump Remote Control")
         self.label.pack()
@@ -51,9 +54,17 @@ class SyringePumpGUI:
         self.custom_dispense_button.pack()
 
         self.step_count = StringVar()
-        # self.step_count_display = Label(self.master, width=20, textvariable=self.step_count)
-        # self.step_count.set('test test')
-        # self.step_count_display.pack()
+        self.step_count_display = Label(self.master, width=20, textvariable=self.step_count)
+        self.step_count.set('test test')
+        self.step_count_display.pack()
+
+        self.reset_total_volume_button = Button(self.master, text="reset volume count", width=20, command=self.reset_total_volume)
+        self.reset_total_volume_button.pack()
+
+        self.total_volume = StringVar()
+        self.total_volume_display = Label(self.master, width=20, textvariable=self.total_volume)
+        self.total_volume.set('test test')
+        self.total_volume_display.pack()
 
         self.close_button = Button(self.master, text="Close", width=20, command=master.quit)
         self.close_button.pack()
@@ -93,7 +104,7 @@ class SyringePumpGUI:
 
     def flush(self):
         '''fully dispense and refill syringe'''
-        confirm = messagebox.askokcancel("About to flush","Syringe must be fully retracted. Continue?")
+        confirm = messagebox.askokcancel("About to flush","Syringe must be fully retracted and valves must be in open position. Continue?")
         if confirm:
             self.dispense(volume=3000)
             # overshoot by 100 ul to account for hysteresis in check valves
@@ -119,6 +130,12 @@ class SyringePumpGUI:
     def update_step_count(self):
         self.step_count.set(self.pump.get_step_count())
 
+    def update_total_volume(self):
+        self.total_volume.set(self.pump.get_volume_dispensed)
+
+    def reset_total_volume(self,value=0):
+        self.pump.set_volume_dispensed(0)
+        self.update_total_volume()
 
     print('in main loop')
 
