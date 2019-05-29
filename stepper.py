@@ -1,6 +1,6 @@
 # from pyfirmata import Arduino, util
 from gpiozero import DigitalOutputDevice
-import numpy as np
+import random
 import time
 
 
@@ -124,7 +124,7 @@ class Stepper(object):
         # the following line will deal with fractional steps by probabalistically rounding
         #  up or down (e.g. 1.75 will be 2 75% of the time and 1 25% of the time)
         #  this will prevent systematic biases in the amount of fluid delivered
-        steps = int(steps) + int(np.random.rand() < (steps % 1))
+        steps = int(steps) + int(random.random() < (steps % 1))
         self.volume_dispensed += steps*self.ul_per_step
         print('delivering {} ul in {} steps'.format(volume, steps))
         self.rotate(steps, direction='dispense', delay=self.delay)
