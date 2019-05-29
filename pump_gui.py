@@ -15,6 +15,9 @@ class SyringePumpGUI:
         self.retract_limit = None
         self.dispense_limit = None
 
+        self.step_count = StringVar()
+        self.total_volume = StringVar()
+
         self.dispense_direction = 'ccw'
         self.retract_direction = 'cw'
         self.continuous_stepsize = 64 # number of steps to take in each loop when dispensing continuously
@@ -53,18 +56,21 @@ class SyringePumpGUI:
             )
         self.custom_dispense_button.pack()
 
-        self.step_count = StringVar()
-        self.step_count_display = Label(self.master, width=20, textvariable=self.step_count)
-        self.step_count.set('test test')
-        self.step_count_display.pack()
+        # self.step_count_display = Label(self.master, width=20, textvariable=self.step_count)
+        # self.step_count.set('test test')
+        # self.step_count_display.pack()
+        self.update_step_count()
+
+        self.update_volume_button = Button(self.master, text="Get updated volume", width=20, command=self.update_step_count)
+        self.update_volume_button.pack()
+
+        self.total_volume_display = Label(self.master, width=25, textvariable=self.total_volume)
+        self.total_volume.set('test test')
+        self.total_volume_display.pack()
+        self.update_total_volume()
 
         self.reset_total_volume_button = Button(self.master, text="reset volume count", width=20, command=self.reset_total_volume)
         self.reset_total_volume_button.pack()
-
-        self.total_volume = StringVar()
-        self.total_volume_display = Label(self.master, width=20, textvariable=self.total_volume)
-        self.total_volume.set('test test')
-        self.total_volume_display.pack()
 
         self.close_button = Button(self.master, text="Close", width=20, command=master.quit)
         self.close_button.pack()
@@ -129,9 +135,13 @@ class SyringePumpGUI:
 
     def update_step_count(self):
         self.step_count.set(self.pump.get_step_count())
+        self.update_total_volume()
 
     def update_total_volume(self):
-        self.total_volume.set(self.pump.get_volume_dispensed)
+        self.total_volume.set("Volume dispensed: {} uL".format(
+            round(self.pump.get_volume_dispensed(),1)
+            ))
+        print('total volume is {}'.format(self.pump.get_volume_dispensed()))
 
     def reset_total_volume(self,value=0):
         self.pump.set_volume_dispensed(0)
