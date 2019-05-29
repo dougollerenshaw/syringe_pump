@@ -19,7 +19,7 @@ class SyringePumpGUI:
         self.master.geometry('300x300')
 
         self.pump = Pyro4.Proxy("PYRONAME:{}".format(servername))
-        self.pump.calibrate(syringe_size)
+        # self.pump.calibrate(syringe_size)
 
         self.label = Label(self.master, text="Syringe Pump Remote Control")
         self.label.pack()
@@ -93,7 +93,7 @@ class SyringePumpGUI:
 
     def flush(self):
         '''fully dispense and refill syringe'''
-        confirm = messagebox.askokcancel("About to flush","Syringe must be fully retracted. Continue?")
+        confirm = messagebox.askokcancel("About to flush","Syringe must be fully retracted and valves must be in open position. Continue?")
         if confirm:
             self.dispense(volume=3000)
             # overshoot by 100 ul to account for hysteresis in check valves
