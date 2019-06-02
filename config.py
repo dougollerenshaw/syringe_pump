@@ -4,7 +4,13 @@ import subprocess
 configuration_values = {
     'servername':'stepper.server',
     'syringe':'3ml',
-    'mode':'rpi'
+    'mode':'rpi',
+    'disable_pin':21,
+    'dir_pin':6,
+    'step_pin':5,
+    'mc1':20,
+    'mc2':19,
+    'mc3':16,
 }
 
 class Config(object):

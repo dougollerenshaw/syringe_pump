@@ -1,28 +1,30 @@
 # from pyfirmata import Arduino, util
 from gpiozero import DigitalOutputDevice
 import random
+from config import Config
 import time
 
 
 class Stepper(object):
     def __init__(self, syringe='5ml', mode='rpi', disable_when_inactive=True, port=None,):
         self.mode = mode
+        config = Config()
         if self.mode == 'arduino':
             self.arduino = Arduino(port)
-            self.disable_pin = 2
-            self.dir_pin = 4
-            self.step_pin = 3
-            self.mc1 = 5
-            self.mc2 = 6
-            self.mc3 = 7
+            self.disable_pin = config.disable_pin
+            self.dir_pin = config.dir_pin
+            self.step_pin = config.set_pin
+            self.mc1 = config.mc1
+            self.mc2 = config.mc2
+            self.mc3 = config.mc3
         elif self.mode == 'rpi':
-            self.disable_pin = DigitalOutputDevice(2)
-            self.dir_pin = DigitalOutputDevice(4)
-            self.step_pin = DigitalOutputDevice(3)
-            self.mc1 = DigitalOutputDevice(5)
-            self.mc2 = DigitalOutputDevice(6)
-            self.mc3 = DigitalOutputDevice(7)
-            self.pin8 = DigitalOutputDevice(8)
+            self.disable_pin = DigitalOutputDevice(config.disable_pin)
+            self.dir_pin = DigitalOutputDevice(config.dir_pin)
+            self.step_pin = DigitalOutputDevice(config.step_pin)
+            self.mc1 = DigitalOutputDevice(config.mc1)
+            self.mc2 = DigitalOutputDevice(config.mc2)
+            self.mc3 = DigitalOutputDevice(config.mc3)
+            self.pin8 = DigitalOutputDevice(4)
             self.delay = 0.00025 # delay between ttl pulses when stepping
 
 
