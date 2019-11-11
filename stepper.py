@@ -25,7 +25,8 @@ class Stepper(object):
             self.mc2 = DigitalOutputDevice(config.mc2)
             self.mc3 = DigitalOutputDevice(config.mc3)
             self.pin8 = DigitalOutputDevice(4)
-            self.delay = 0.00025 # delay between ttl pulses when stepping
+            
+        self.delay = 0.00025 # delay between ttl pulses when stepping
 
 
         # should we turn off the motor between commands?
